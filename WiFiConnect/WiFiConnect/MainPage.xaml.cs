@@ -1,6 +1,5 @@
 ﻿using Plugin.Settings;
 using System;
-using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
 namespace WiFiConnect
@@ -10,13 +9,14 @@ namespace WiFiConnect
         bool passwwordViewPermitted = false;
         string networkKeyValue = "";
         public static MainPage mainPage;
+        BasicAlgorthm ba;
 
         public MainPage()
         {
             InitializeComponent();
             mainPage = this;
             SizeChanged += OnPageSizeChanged;
-
+            ba = new BasicAlgorthm();
             CrossSettings.Current.AddOrUpdateValue("name", "Tom");
             //CrossSettings.Current.AddOrUpdateValue<string>("name", "Tom");
         }
@@ -45,8 +45,6 @@ namespace WiFiConnect
                 stringLandscape.IsVisible = false;
                 PasswordField1.Orientation = StackOrientation.Vertical;
                 PasswordField2.HorizontalOptions = LayoutOptions.StartAndExpand;
-
-
 
                 if ((Height > 1000) && (Width > 700))
                 {
@@ -103,8 +101,12 @@ namespace WiFiConnect
             }
         }
 
-        void ConnectButton_Click(object sender, EventArgs e)
+        public async void ConnectButton_ClickAsync(object sender, EventArgs e)
         {
+            string x = await ba.ConnectRobotToWiFiAsync("RLDA_NET", "pr0tectnetw0rk13", "");
+
+            return;
+
             networkKeyValue = networkKey.Text;
             //networkKeyValue = "pr0tectnetw0rk13";
 
@@ -127,7 +129,7 @@ namespace WiFiConnect
 
         void buttonGo_Click(object sender, EventArgs e)
         {
-            Uri uri = new Uri("https://boteyes.com/DefaultEng.aspx");
+            Uri uri = new Uri("https://boteyes.com/");
             Device.BeginInvokeOnMainThread(() =>
             {
                 Device.OpenUri(uri);
@@ -136,7 +138,7 @@ namespace WiFiConnect
 
         private void manualButton_Clicked(object sender, EventArgs e)
         {
-            Uri uri = new Uri("https://boteyes.com/HelpEng.aspx");
+            Uri uri = new Uri("https://boteyes.com/HelpEng.html");
             Device.BeginInvokeOnMainThread(() =>
             {
                 Device.OpenUri(uri);
@@ -174,6 +176,16 @@ namespace WiFiConnect
             StatusBlock.Text = "   " + strMessage;
             BatchBegin();
             ForceLayout();
+        }
+
+        public void ResultsListView_SelectionChanged(object sender, SelectedItemChangedEventArgs e)
+        {
+
+        }
+
+        public void ButtonNetList_Clicked(object sender, EventArgs e)
+        {
+
         }
 
         public enum NotifyType

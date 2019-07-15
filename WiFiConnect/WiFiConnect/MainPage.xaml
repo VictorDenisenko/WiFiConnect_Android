@@ -5,10 +5,19 @@
     
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness">
-            <On Platform="iOS" Value="20, 40, 20, 20" />
-            <On Platform="Android, UWP" Value="20" />
+            <On Platform="Android" Value="20" />
         </OnPlatform>
     </ContentPage.Padding>
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <x:Array x:Key="phones" Type="{x:Type x:String}">
+        <x:String>iPhone 7</x:String>
+        <x:String>HP Elite z3</x:String>
+        <x:String>Huawei P10</x:String>
+        <x:String>Xiaomi Mi6</x:String>
+      </x:Array>
+    </ResourceDictionary>
+  </ContentPage.Resources>
 
     <ScrollView>
         <StackLayout>
@@ -26,6 +35,29 @@
                 <Label x:Name="string21" Text="- make sure this gadget is alredy connected to WiFi"  />
                 <Label x:Name="string22" Text="- turn OFF 'Mobile data' in your gadget"  />
                 <Label x:Name="string3" Text="- enter your network security key:"  />
+            </StackLayout>
+
+          <StackLayout VerticalOptions="CenterAndExpand">
+            <Button Clicked="ButtonNetList_Clicked" VerticalOptions="CenterAndExpand" Text="Scan Available Wifi Networks" BackgroundColor="DarkCyan" TextColor="White"/>
+          </StackLayout>
+
+            <StackLayout>
+              <Label Text="Список моделей" HorizontalOptions="Center" FontSize="Large" />
+              <!--<ListView x:Name="phonesList" ItemsSource="{StaticResource Key=phones}" />-->
+                <!--<ListView x:Name="ResultsListView"
+                      ItemsSource="{Binding ResultCollection}"
+                      ItemSelected="ResultsListView_SelectionChanged">
+                </ListView>-->
+            </StackLayout>
+
+          
+          
+          
+          
+          
+          
+
+            <StackLayout VerticalOptions="CenterAndExpand">
                 <StackLayout x:Name="PasswordField1">
                     <Entry x:Name="networkKey" IsPassword="True" Placeholder = "Key" BackgroundColor="LightGray" HorizontalOptions="FillAndExpand" WidthRequest="150"/>
                     <StackLayout x:Name="PasswordField2" Orientation="Horizontal"  >
@@ -33,7 +65,7 @@
                         <Label x:Name="PasswordSwitchLabel" Text="Turn ON to view entered key" VerticalOptions="End" HorizontalOptions="Start" />
                     </StackLayout>
                 </StackLayout>
-                <Button x:Name="StartButton" VerticalOptions="StartAndExpand" Text="Press here to connect" Clicked="ConnectButton_Click" BackgroundColor="DarkCyan" TextColor="White"/>
+                <Button x:Name="StartButton" VerticalOptions="StartAndExpand" Text="Press here to connect" Clicked="ConnectButton_ClickAsync" BackgroundColor="DarkCyan" TextColor="White"/>
                 <Label x:Name="string4"  Text="- wait for up to 2 minutes until you will see Status message below"  />
             </StackLayout>
             <Label x:Name="string5"  Text="Status:"/>

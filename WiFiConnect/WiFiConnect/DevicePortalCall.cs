@@ -81,6 +81,9 @@ namespace WiFiConnect
 
         public async Task<string> ConnectRobotToWiFiAsync(string networkName, string networkSecurityKey, string x)
         {
+
+            string x1 = await LookingForGuidAsync("admin", "Administrator", "");
+
             string result = "";
             string ssid = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(networkName));
             string key = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(networkSecurityKey));

@@ -23,7 +23,7 @@ namespace WiFiConnect.Droid
         }
 
         int currentRequestCodePermission;
-        IPermissionCallback currentPermissionCallback;
+        //IPermissionCallback currentPermissionCallback;
 
         public MainActivity()
         {
@@ -42,47 +42,47 @@ namespace WiFiConnect.Droid
             mp = MainPage.mainPage;
         }
 
-        public void AskForPermission(string permission, int requestCode, IPermissionCallback callback)
-        {
-            currentPermissionCallback = callback;
-            var permissionCheck = (int)ContextCompat.CheckSelfPermission(this, permission);
-            if (permissionCheck == (int)Permission.Granted)
-            {
-                callback.OnGrantedPermission(requestCode);
-            }
-            else
-            {
-                currentRequestCodePermission = requestCode;
-                ActivityCompat.RequestPermissions(this, new string[] { permission }, requestCode);
-            }
-        }
+        //public void AskForPermission(string permission, int requestCode, IPermissionCallback callback)
+        //{
+        //    currentPermissionCallback = callback;
+        //    var permissionCheck = (int)ContextCompat.CheckSelfPermission(this, permission);
+        //    if (permissionCheck == (int)Permission.Granted)
+        //    {
+        //        callback.OnGrantedPermission(requestCode);
+        //    }
+        //    else
+        //    {
+        //        currentRequestCodePermission = requestCode;
+        //        ActivityCompat.RequestPermissions(this, new string[] { permission }, requestCode);
+        //    }
+        //}
 
         public void ShowToast(string message)
         {
             Toast.MakeText(this, message, ToastLength.Long).Show();
         }
 
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
-        {
-            if (requestCode == currentRequestCodePermission)
-            {
-                if (grantResults.Length > 0 && grantResults[0] == Permission.Granted)
-                {
-                    if (currentPermissionCallback != null)
-                    {
-                        currentPermissionCallback.OnGrantedPermission(requestCode);
-                    }
-                }
-                else
-                {
-                    if (currentPermissionCallback != null)
-                    {
-                        currentPermissionCallback.OnDeniedPermission(requestCode);
-                    }
-                }
-                currentPermissionCallback = null;
-            }
-        }
+        //public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+        //{
+        //    if (requestCode == currentRequestCodePermission)
+        //    {
+        //        if (grantResults.Length > 0 && grantResults[0] == Permission.Granted)
+        //        {
+        //            if (currentPermissionCallback != null)
+        //            {
+        //                currentPermissionCallback.OnGrantedPermission(requestCode);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (currentPermissionCallback != null)
+        //            {
+        //                currentPermissionCallback.OnDeniedPermission(requestCode);
+        //            }
+        //        }
+        //        currentPermissionCallback = null;
+        //    }
+        //}
 
         protected override void OnResume()
         {
