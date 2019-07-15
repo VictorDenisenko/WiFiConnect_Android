@@ -24,6 +24,7 @@
                 <!--<Label x:Name="stringPortret" Text="To connect BotEyes to WiFi:" FontAttributes="Bold" FontSize="Medium" TextColor="DarkCyan" VerticalOptions="End" HorizontalOptions="StartAndExpand"/>-->
                 <Label x:Name="string2" Text="- press 'Reset WiFi' button on the Robot chassis (see User Manual) and wait for up to 2 minutes while you can see AJ_SoftAPSsid_... network in the list of available networks of your gadget"/>
                 <Label x:Name="string21" Text="- make sure this gadget is alredy connected to WiFi"  />
+                <Label x:Name="string22" Text="- turn OFF 'Mobile data' in your gadget"  />
                 <Label x:Name="string3" Text="- enter your network security key:"  />
                 <StackLayout x:Name="PasswordField1">
                     <Entry x:Name="networkKey" IsPassword="True" Placeholder = "Key" BackgroundColor="LightGray" HorizontalOptions="FillAndExpand" WidthRequest="150"/>

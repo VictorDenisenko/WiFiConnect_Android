@@ -1,19 +1,9 @@
-﻿using Android;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Nfc;
 using Android.OS;
-using Android.Support.Design.Widget;
 using Android.Support.V4.App;
 using Android.Support.V4.Content;
-using Android.Util;
 using Android.Widget;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 

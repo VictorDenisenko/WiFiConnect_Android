@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.Settings;
+using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
@@ -15,6 +16,9 @@ namespace WiFiConnect
             InitializeComponent();
             mainPage = this;
             SizeChanged += OnPageSizeChanged;
+
+            CrossSettings.Current.AddOrUpdateValue("name", "Tom");
+            //CrossSettings.Current.AddOrUpdateValue<string>("name", "Tom");
         }
 
         public void Dispose()

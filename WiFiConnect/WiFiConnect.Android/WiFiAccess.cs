@@ -95,11 +95,10 @@ namespace WiFiConnect.Droid
                         gadgetNetworkId = wifiManager.ConnectionInfo.NetworkId;
                         CommonStruct.lastConnectedSsid = wifiManager.ConnectionInfo.SSID;
                     }
-                    if (ResultCollection[i].Ssid.StartsWith("AJ_SoftAPSsid_"))
+                    if (ResultCollection[i].Ssid.StartsWith("AJ_"))
                     {
                         SoftApNetwork = ResultCollection[i];//Запоминаем объект с настройками сети робота
                         SoftApSsid = SoftApNetwork.Ssid;
-
                     }
                 }
                 
@@ -109,7 +108,7 @@ namespace WiFiConnect.Droid
                 }
                 else if (LastConnectedNetwork != null)
                 {
-                    if (LastConnectedNetwork.Ssid.StartsWith("AJ_SoftAPSsid_"))
+                    if (LastConnectedNetwork.Ssid.StartsWith("AJ_"))
                     {
                         mp.NotifyUser("WiFi access point " + LastConnectedNetwork.Ssid + " cannot be used for this purpose. Choose another.", MainPage.NotifyType.ErrorMessage);
                     }
