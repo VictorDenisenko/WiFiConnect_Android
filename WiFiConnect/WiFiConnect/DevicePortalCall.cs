@@ -22,10 +22,7 @@ namespace WiFiConnect
 
     public partial class BasicAlgorthm 
     {
-       
-
         MainPage mp;
-
         public BasicAlgorthm()
         {
             mp = MainPage.mainPage;

@@ -17,7 +17,7 @@ namespace WiFiConnect
             mainPage = this;
             SizeChanged += OnPageSizeChanged;
             ba = new BasicAlgorthm();
-            CrossSettings.Current.AddOrUpdateValue("name", "Tom");
+            //CrossSettings.Current.AddOrUpdateValue("name", "Tom");
             //CrossSettings.Current.AddOrUpdateValue<string>("name", "Tom");
         }
 

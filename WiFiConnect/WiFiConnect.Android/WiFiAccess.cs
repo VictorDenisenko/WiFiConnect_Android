@@ -13,7 +13,7 @@ namespace WiFiConnect.Droid
 {
     delegate string FunctionTheSameAddress();
 
-    public class WiFiAccess : IWiFiInterface, MainActivity.IPermissionCallback
+    public class WiFiAccess : IWiFiInterface 
     {
         WifiManager wifiManager = null;
         MainPage mp;
@@ -24,8 +24,6 @@ namespace WiFiConnect.Droid
         string networkKey = "";
         string SoftApSsid = "";
         MainActivity owner;
-        readonly static int ACCESS_FINE_LOCATION = 0;
-        string permissions = "Yes";
 
         public static IAccessPointHelper AccessPointHelper { get; set; }
         private ObservableCollection<AccessPoint> _AvailableAccessPoints = new ObservableCollection<AccessPoint>();
@@ -48,9 +46,6 @@ namespace WiFiConnect.Droid
             var ver = Android.OS.Build.VERSION.Release;
             if ((ver.StartsWith("8")) || (ver.StartsWith("7")) || (ver.StartsWith("6")))
             {
-                //permissions = "No";
-                //owner.AskForPermission(Manifest.Permission.AccessFineLocation, 0, this);
-
                 AccessPointHelper = new WifiHelper();
                 AccessPointHelper.AccessPointsEnumeratedEvent += AccessPointHelper_AccessPointsEnumeratedEvent;
                 FindAccessPoints(null, null);
@@ -58,13 +53,6 @@ namespace WiFiConnect.Droid
             }
             else
             {
-                //permissions = "Yes";
-
-                //AccessPointHelper = new WifiHelper();
-                //AccessPointHelper.AccessPointsEnumeratedEvent += AccessPointHelper_AccessPointsEnumeratedEvent;
-                //FindAccessPoints(null, null);
-
-
 
                 AccessPointHelper = new WifiHelper();
                 AccessPointHelper.AccessPointsEnumeratedEvent += AccessPointHelper_AccessPointsEnumeratedEvent;
@@ -142,25 +130,5 @@ namespace WiFiConnect.Droid
             }
         }
 
-        public void OnGrantedPermission(int requestCode)
-        {
-            if (requestCode == ACCESS_FINE_LOCATION)
-            {
-                permissions = "Yes";
-                AccessPointHelper = new WifiHelper();
-                AccessPointHelper.AccessPointsEnumeratedEvent += AccessPointHelper_AccessPointsEnumeratedEvent;
-                FindAccessPoints(null, null);
-            }
-        }
-
-        public void OnDeniedPermission(int requestCode)
-        {
-            if (requestCode == ACCESS_FINE_LOCATION)
-            {
-                permissions = "No";
-                owner.ShowToast("Permission was denied");
-                mp.NotifyUser("Cannot connect to WiFi without Permission 'Location' for BotEyesWiFi app, see User Manual.", MainPage.NotifyType.ErrorMessage);
-            }
-        }
     }
 }
