@@ -150,11 +150,7 @@ namespace WiFiConnect
             }
         }
 
-        public void ConnectingAlgorithmStart()
-        {
-            var connector = DependencyService.Get<IWiFiInterface>();
-            connector.ConnectToWifi(networkKeyValue);
-        }
+       
 
         void buttonGo_Click(object sender, EventArgs e)
         {
