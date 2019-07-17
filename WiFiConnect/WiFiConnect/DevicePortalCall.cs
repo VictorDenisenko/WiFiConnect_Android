@@ -70,6 +70,7 @@ namespace WiFiConnect
             catch (Exception ex)
             {
                 result = ex.Message;
+                result = "Something is wrong. Check if your gadget is connected to BotEyes access point.";
 
                 return result;
             }
@@ -81,11 +82,11 @@ namespace WiFiConnect
 
             string result1 = await LookingForGuidAsync("admin", "Administrator", "");
 
-            if (result1 != "OK")
-            {
-                mp.NotifyUser(result1, MainPage.NotifyType.StatusMessage);
-                //return result1;
-            }
+            //if (result1 != "OK")
+            //{
+            //    mp.NotifyUser(result1, MainPage.NotifyType.StatusMessage);
+            //    return result1;
+            //}
 
             string result = "";
             string ssid = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(networkName));
@@ -111,7 +112,7 @@ namespace WiFiConnect
             }
             catch(Exception ex)
             {
-                result = ex.Message; 
+                result = "Something is wrong. Check if your gadget is connected to BotEyes access point AJ_..."; 
             }
             return result;
         }
@@ -133,144 +134,14 @@ namespace WiFiConnect
             }
             return guid;
         }
-
-        public async Task<string> LookingForIPAddress(string robotNetworkPassword, string robotNetworkAdminName, string softApAddress)
-        {
-            string ipAddress = "";
-            Uri uri = new Uri("http://" + softApAddress + "/api/networking/ipconfig");
-            int pointsNumber = 0;
-            HttpResponseMessage response = new HttpResponseMessage();
-            string result = "";
-            string responseStatusCode = "";
-            string result2 = "";
-            try
-            {
-                if (CommonStruct.publicGuid == "")
-                {
-                    result2 = await IteratorAsync(robotNetworkPassword, robotNetworkAdminName, "", LookingForGuidAsync);
-
-                    //result2 = await LookingForGuidAsync(robotNetworkPassword, robotNetworkAdminName, "");
-                }
-                else
-                {
-                    result2 = "OK";
-                }
-                if (result2 == "OK")
-                {
-                    var authData = string.Format("{0}:{1}", robotNetworkAdminName, robotNetworkPassword);
-                    var authHeaderValue = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(authData));
-
-                    using (HttpClient client = new HttpClient())
-                    {
-                        client.MaxResponseContentBufferSize = 256000;
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
-                        using (response = await client.GetAsync(uri))
-                        {
-                            if (response.IsSuccessStatusCode)
-                            {
-                                responseStatusCode = Convert.ToString(response.StatusCode);
-                                if (response.Content != null)
-                                {
-                                    string responseBodyAsText;
-                                    responseBodyAsText = await response.Content.ReadAsStringAsync();
-                                    ipAddress = getIP(responseBodyAsText) + ":8080";
-
-                                    string[] separator = { "." };
-                                    string[] s = ipAddress.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                                    pointsNumber = s.Length - 1;
-                                    if ((pointsNumber == 3) && (s[0] != "0"))
-                                    {
-                                        CommonStruct.robotIpAddress = ipAddress;
-                                        result = "OK";
-                                    }
-                                    else if ((pointsNumber == 3) && (s[0] == "0"))
-                                    {
-                                        result = "NotConnected";
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                result = ex.Message;
-                return result;
-            }
-            return result;
-        }
-
-        private string getIP(string jsonString)
-        {
-            string ipAddress = "";
-
-            if (jsonString.Contains(CommonStruct.publicGuid))
-            {
-                int position1 = jsonString.IndexOf(CommonStruct.publicGuid);
-                string shortString1 = jsonString.Substring(position1);
-
-                int position2 = shortString1.IndexOf("IpAddresses");
-                string shortString2 = shortString1.Substring(position2);
-
-                int position3 = shortString2.IndexOf("IpAddress", 11);
-                string shortString3 = shortString2.Substring(position3);
-
-                int position4 = shortString3.IndexOf(":");
-                string shortString4 = shortString3.Substring(position4);
-
-                string shortString5 = shortString4.Remove(0, 3);
-
-                int position5 = shortString5.IndexOf("\"");
-
-                ipAddress = shortString5.Remove(position5);
-            }
-            else
-            {
-                ipAddress = "";
-            }
-            return ipAddress;
-        }
-
-        public async Task<string> LookingForInfo(string robotNetworkPassword, string robotNetworkAdminName, string x)
-        {
-            MessageFromRobot messageFromRobot = new MessageFromRobot();
-            HttpClient client;
-            Uri uri = new Uri("http://192.168.137.1:8080/api/os/info");
-            string result = "";
-            try
-            {
-                var authData = string.Format("{0}:{1}", robotNetworkAdminName, robotNetworkPassword);
-                var authHeaderValue = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(authData));
-                //HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
-                //httpRequestMessage.RequestUri = uri;
-                //httpRequestMessage.Method = HttpMethod.Get;
-                using (client = new HttpClient())
-                {
-                    client.MaxResponseContentBufferSize = 256000;
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
-
-                    using (var response = await client.GetAsync(uri))
-                    {
-                        result = Convert.ToString(response.StatusCode);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                result = ex.Message;
-                return result;
-            }
-            return result;
-        }
-
+             
+ 
         public async Task<string> IteratorAsync(string x, string y, string z, Function func)
         {
             string result = "";
             DateTime dt = DateTime.Now;
             long startTicks = dt.Ticks;
             long oneSec = 10000000;//Одна сек = 10 млн. тиков
-            MessageFromRobot netAvailability = new MessageFromRobot();
             result = await func(x, y, z);
             long timeEllapsed = 0;
 
@@ -291,14 +162,5 @@ namespace WiFiConnect
             }
             return result;
         }
-    }
-
-    public class MessageFromRobot
-    {
-        public string errorMessage = "";
-        public string statusCode = "";
-        public int iterNumber = 0;
-        public string guid = "";
-        public string ipAddress = "";
     }
 }

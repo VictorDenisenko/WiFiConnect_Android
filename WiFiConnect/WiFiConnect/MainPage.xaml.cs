@@ -140,7 +140,7 @@ namespace WiFiConnect
 
                 if (result != "OK")
                 {
-                    NotifyUser(result, NotifyType.StatusMessage);
+                    NotifyUser("Something is wrong. Check if your gadget is connected to BotEyes access point AJ_...", NotifyType.StatusMessage);
                     return;
                 }
                 else
