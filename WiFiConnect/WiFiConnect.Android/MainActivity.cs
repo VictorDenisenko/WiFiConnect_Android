@@ -16,12 +16,6 @@ namespace WiFiConnect.Droid
         MainPage mp;
         public static MainActivity owner;
 
-        //public interface IPermissionCallback
-        //{
-        //    void OnGrantedPermission(int requestCode);
-        //    void OnDeniedPermission(int requestCode);
-        //}
-
         public MainActivity()
         {
             owner = this;

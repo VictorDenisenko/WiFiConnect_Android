@@ -1,6 +1,9 @@
-﻿using Plugin.Settings;
-using System;
+﻿using System;
 using Xamarin.Forms;
+using Android.Content;
+using Android.App;
+using Plugin.Connectivity;
+using System.Linq;
 
 namespace WiFiConnect
 {
@@ -19,6 +22,7 @@ namespace WiFiConnect
             ba = new BasicAlgorthm();
             //CrossSettings.Current.AddOrUpdateValue("name", "Tom");
             //CrossSettings.Current.AddOrUpdateValue<string>("name", "Tom");
+            
         }
 
         public void Dispose()
@@ -43,19 +47,19 @@ namespace WiFiConnect
                 LogoLandscape.IsVisible = false;
                 stringPortret.IsVisible = true;
                 stringLandscape.IsVisible = false;
-                PasswordField1.Orientation = StackOrientation.Vertical;
-                PasswordField2.HorizontalOptions = LayoutOptions.StartAndExpand;
+                //PasswordField1.Orientation = StackOrientation.Vertical;
+                //PasswordField2.HorizontalOptions = LayoutOptions.StartAndExpand;
 
                 if ((Height > 1000) && (Width > 700))
                 {
-                    PasswordField1.Orientation = StackOrientation.Vertical;
-                    PasswordField2.HorizontalOptions = LayoutOptions.StartAndExpand;
+                    //PasswordField1.Orientation = StackOrientation.Vertical;
+                    //PasswordField2.HorizontalOptions = LayoutOptions.StartAndExpand;
                     //stringPortret.FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label));
                     stringLandscape.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
-                    string2.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
-                    string3.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
-                    string4.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
-                    string5.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
+                    //string2.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
+                    //string3.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
+                    //string4.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
+                    //string5.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
                     PasswordSwitchLabel.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
                     StatusBlock.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
 
@@ -75,18 +79,18 @@ namespace WiFiConnect
                 stringPortret.IsVisible = false;
                 stringLandscape.IsVisible = true;
 
-                PasswordField1.Orientation = StackOrientation.Horizontal;
-                PasswordField2.HorizontalOptions = LayoutOptions.EndAndExpand;
+                //PasswordField1.Orientation = StackOrientation.Horizontal;
+                //PasswordField2.HorizontalOptions = LayoutOptions.EndAndExpand;
 
                 if ((Height < 1000) || (Width < 700))
                 {
                     //stringPortret.FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label));
                     
                     stringLandscape.FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label));
-                    string2.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
-                    string3.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
-                    string4.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
-                    string5.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
+                    //string2.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
+                    //string3.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
+                    //string4.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
+                    //string5.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
                     PasswordSwitchLabel.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
                     StatusBlock.FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label));
 
@@ -103,21 +107,46 @@ namespace WiFiConnect
 
         public async void ConnectButton_ClickAsync(object sender, EventArgs e)
         {
-            string x = await ba.ConnectRobotToWiFiAsync("RLDA_NET", "pr0tectnetw0rk13", "");
-
-            return;
-
+            string ssid = enteredSsid.Text;
+            ssid = "RLDA_NET";
             networkKeyValue = networkKey.Text;
-            //networkKeyValue = "pr0tectnetw0rk13";
+            networkKeyValue = "pr0tectnetw0rk13";
+            var wifi = Plugin.Connectivity.Abstractions.ConnectionType.WiFi;
+            var connectionTypes = CrossConnectivity.Current.ConnectionTypes;
+            NotifyUser("", NotifyType.StatusMessage);
 
-            if ((networkKeyValue == null) || (networkKeyValue == ""))
+            if ((ssid == null) || (ssid == ""))
+            {
+                NotifyUser("Enter network SSID (Name) in field above", NotifyType.ErrorMessage);
+                return;
+            }
+            else if ((networkKeyValue == null) || (networkKeyValue == ""))
             {
                 NotifyUser("Enter network security key in field above", NotifyType.ErrorMessage);
+                return;
+            }
+            else if (!connectionTypes.Contains(wifi))
+            {
+                NotifyUser("You are not connected to WiFi", NotifyType.ErrorMessage);
+                return;
             }
             else
             {
                 NotifyUser("Waiting for connection...", NotifyType.StatusMessage);
-                ConnectingAlgorithmStart();
+                //string result = await ba.ConnectRobotToWiFiAsync(ssid, networkKeyValue, "");
+
+                string result = await ba.IteratorAsync(ssid, networkKeyValue, "", ba.ConnectRobotToWiFiAsync);
+
+
+                if (result != "OK")
+                {
+                    NotifyUser(result, NotifyType.StatusMessage);
+                    return;
+                }
+                else
+                {
+                    NotifyUser("BotEyes is connected to WiFi successfully.", NotifyType.StatusMessage);
+                }
             }
         }
 
