@@ -9,7 +9,7 @@
         </OnPlatform>
     </ContentPage.Padding>
 
-    <ScrollView>
+    <ScrollView x:Name="ScrollOfPage">
         <StackLayout>
             <!--<Image x:Name="LogoPortret" Source="boteyes_logo.png" VerticalOptions="Start" HorizontalOptions="Start" />-->
             <StackLayout x:Name="Logo" Orientation="Horizontal" >
@@ -22,7 +22,7 @@
         <StackLayout VerticalOptions="CenterAndExpand">
             <!--<Label x:Name="stringPortret" Text="To connect BotEyes to WiFi:" FontAttributes="Bold" FontSize="Medium" TextColor="DarkCyan" VerticalOptions="End" HorizontalOptions="StartAndExpand"/>-->
                 <Label Text="1. Turn BotEyes ON and wait for about one minute until Windows IoT boots." />
-                <Label Text="2. Press 'Reset WiFi' button on the Robot chassis (see User Manual) and wait for up to 2 minutes while you can see robot access point 'AJ_SoftApSsid...' in the list of available networks of your gadget. Connect your gadget to it using your own password or default 'p@ssw0rd'."/>
+                <Label Text="2. Press 'Reset WiFi' button on the BotEyes chassis (see User Manual) and wait for up to 2 minutes while you can see robot access point 'AJ_SoftApSsid...' in the list of available networks of your gadget. Connect your gadget to it using your own password or default 'p@ssw0rd'."/>
                 <Label Text="3. Enter SSID of the network to which you want to connect the robot:"/>
                 <StackLayout>
                     <Entry x:Name="enteredSsid" IsPassword="False" Placeholder = "Net SSID" BackgroundColor="LightGray" HorizontalOptions="FillAndExpand" WidthRequest="150"/>
@@ -42,9 +42,28 @@
             <Label  x:Name="StatusBlock" Margin="5, 17"  IsVisible="True" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" TextColor="White" />
         </StackLayout>
         <Button x:Name="GoToSiteButton" VerticalOptions="CenterAndExpand" Text="Open BotEyes control website" Clicked="buttonGo_Click"  
-                    BackgroundColor="DarkCyan"   TextColor="White"/>
+                BackgroundColor="DarkCyan"   TextColor="White"/>
         <Button x:Name="UserManualButton"  VerticalOptions="CenterAndExpand" Text="User manual for BotEyes" Clicked="manualButton_Clicked"  
-                    BackgroundColor="DarkCyan"   TextColor="White"/>
+                BackgroundColor="DarkCyan"   TextColor="White"/>
+
+
+            <StackLayout x:Name="DevicePortalSettings"   >
+                <Label Text="Enter non-default password for BotEyes Device Portal (see User Manual)"/>
+                <Entry x:Name="devicePortalPassword" IsPassword="True" Placeholder = "Password" BackgroundColor="LightGray" HorizontalOptions="FillAndExpand" WidthRequest="150"/>
+                <StackLayout Orientation="Horizontal"  >
+                        <Switch x:Name="DpPasswordViewSwitcher" Toggled="DpPasswordViewSwitcher_Toggled"  VerticalOptions="End" IsToggled="False" HorizontalOptions="Start" />
+                        <Label x:Name="DpPasswordSwitchLabel" Text="Turn ON to view entered key" VerticalOptions="End" HorizontalOptions="Start" />
+                </StackLayout>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                    <Button x:Name="Save" VerticalOptions="StartAndExpand" Text="Save" Clicked="Save_ClickedAsync"  BackgroundColor="DarkCyan" TextColor="White"/>
+                    <Button x:Name="Discard" VerticalOptions="StartAndExpand" Text="Don't Save" Clicked="Discard_Clicked"  BackgroundColor="DarkCyan" TextColor="White"/>
+                </StackLayout>
+                
+            </StackLayout>
+
+
+            <Button x:Name="SettingsButton"  VerticalOptions="CenterAndExpand" Text="Settings" Clicked="ButtonSettings_Click"  
+            BackgroundColor="DarkCyan" TextColor="White"/>
     </StackLayout>
     </ScrollView>
 </ContentPage>

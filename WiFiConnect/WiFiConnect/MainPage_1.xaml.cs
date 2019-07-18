@@ -5,18 +5,14 @@ using Android.App;
 using Plugin.Connectivity;
 using System.Linq;
 
-
 namespace WiFiConnect
 {
     public partial class MainPage : ContentPage
     {
         bool passwwordViewPermitted = false;
-        bool dpPasswwordViewPermitted = false;
         string networkKeyValue = "";
-        string dpNetworkKeyValue = "";
         public static MainPage mainPage;
         BasicAlgorthm ba;
-        
 
         public MainPage()
         {
@@ -24,17 +20,9 @@ namespace WiFiConnect
             mainPage = this;
             SizeChanged += OnPageSizeChanged;
             ba = new BasicAlgorthm();
-            DevicePortalSettings.IsVisible = false;
-            object name = "";
-            if (!App.Current.Properties.TryGetValue("devicePortalPassword", out name))
-            {//Если объекта в хранилище нет
-                App.Current.Properties["devicePortalPassword"] = "admin";
-            }
-
-            CommonStruct.devicePortalPassword = (App.Current.Properties["devicePortalPassword"].ToString());
-
-            //var currentuserID = (App.Current.Properties["devicePortalPassword"].ToString());
-            //App.Current.Properties.TryGetValue("devicePortalPassword", out name);
+            //CrossSettings.Current.AddOrUpdateValue("name", "Tom");
+            //CrossSettings.Current.AddOrUpdateValue<string>("name", "Tom");
+            
         }
 
         public void Dispose()
@@ -120,9 +108,9 @@ namespace WiFiConnect
         public async void ConnectButton_ClickAsync(object sender, EventArgs e)
         {
             string ssid = enteredSsid.Text;
-            //ssid = "RLDA_NET";
+            ssid = "RLDA_NET";
             networkKeyValue = networkKey.Text;
-            //networkKeyValue = "pr0tectnetw0rk13";
+            networkKeyValue = "pr0tectnetw0rk13";
             var wifi = Plugin.Connectivity.Abstractions.ConnectionType.WiFi;
             var connectionTypes = CrossConnectivity.Current.ConnectionTypes;
             NotifyUser("", NotifyType.StatusMessage);
@@ -142,12 +130,6 @@ namespace WiFiConnect
                 NotifyUser("You are not connected to WiFi", NotifyType.ErrorMessage);
                 return;
             }
-            else if (CommonStruct.devicePortalPassword == null)
-            {
-                NotifyUser("Enter Device Portal password ", NotifyType.ErrorMessage);
-                ButtonSettings_Click(null, null);
-                return;
-            }
             else
             {
                 NotifyUser("Waiting for connection...", NotifyType.StatusMessage);
@@ -155,20 +137,10 @@ namespace WiFiConnect
 
                 string result = await ba.IteratorAsync(ssid, networkKeyValue, "", ba.ConnectRobotToWiFiAsync);
 
-                if (result == "WrongNet")
-                {
-                    NotifyUser("Check if your gadget is connected to BotEyes Access Point AJ_...", NotifyType.ErrorMessage);
-                    return;
-                }
 
-                if(result == "Unauthorized")
+                if (result != "OK")
                 {
-                    NotifyUser("Password for Device Portal is wrong.", NotifyType.ErrorMessage);
-                    return;
-                }
-                else if (result != "OK")
-                {
-                    NotifyUser("Something is wrong. Check password and if your gadget is connected to BotEyes access point AJ_...", NotifyType.ErrorMessage);
+                    NotifyUser("Something is wrong. Check if your gadget is connected to BotEyes access point AJ_...", NotifyType.StatusMessage);
                     return;
                 }
                 else
@@ -231,20 +203,36 @@ namespace WiFiConnect
             ForceLayout();
         }
 
-        
+        Label textLabel;
+        Entry loginEntry, passwordEntry;
         private void ButtonSettings_Click(object sender, EventArgs e)
         {
-            devicePortalPassword.Text = CommonStruct.devicePortalPassword;
+            //StackLayout stackLayout = new StackLayout();
 
+            GoToSiteButton.IsVisible = false;
+            UserManualButton.IsVisible = false;
 
-            DevicePortalSettings.IsVisible = true;
-            DevicePortalSettings.LayoutChanged += DevicePortalSettings_LayoutChanged;
-            
-        }
+            if (loginEntry == null)
+            {
+                loginEntry = new Entry { Placeholder = "Login" };
+                loginEntry.TextChanged += LoginEntry_TextChanged; ;
 
-        private void DevicePortalSettings_LayoutChanged(object sender, EventArgs e)
-        {
-            ScrollOfPage.ScrollToAsync(SettingsButton, ScrollToPosition.End, true);
+                passwordEntry = new Entry
+                {
+                    Placeholder = "Password",
+                    IsPassword = true
+                };
+                passwordEntry.TextChanged += PasswordEntry_TextChanged;
+                textLabel = new Label { FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)) };
+
+                //stackLayout.Children.Add(loginEntry);
+                //stackLayout.Children.Add(passwordEntry);
+                //stackLayout.Children.Add(textLabel);
+                //this.Content = stackLayout;
+
+                DevicePortalSettings.Children.Add(loginEntry);
+                DevicePortalSettings.Children.Add(passwordEntry);
+            }
         }
 
         private void PasswordEntry_TextChanged(object sender, TextChangedEventArgs e)
@@ -262,43 +250,5 @@ namespace WiFiConnect
             StatusMessage,
             ErrorMessage
         };
-
-        private async void Save_ClickedAsync(object sender, EventArgs e)
-        {
-            CommonStruct.devicePortalPassword = devicePortalPassword.Text;
-            App.Current.Properties["devicePortalPassword"] = CommonStruct.devicePortalPassword;
-            await App.Current.SavePropertiesAsync();
-
-            DevicePortalSettings.IsVisible = false;
-        }
-
-        private void Discard_Clicked(object sender, EventArgs e)
-        {
-            DevicePortalSettings.IsVisible = false;
-        }
-
-        private void DpPasswordViewSwitcher_Toggled(object sender, ToggledEventArgs e)
-        {
-            //devicePortalPassword
-            try
-            {
-                dpPasswwordViewPermitted = DpPasswordViewSwitcher.IsToggled;
-
-                if (dpPasswwordViewPermitted == true)
-                {
-                    DpPasswordSwitchLabel.Text = "To hide entered key turn the switch OFF";
-                    dpNetworkKeyValue = devicePortalPassword.Text;
-                    devicePortalPassword.IsPassword = false;
-                }
-                else
-                {
-                    DpPasswordSwitchLabel.Text = "Turn switch ON to view entered key";
-                    devicePortalPassword.IsPassword = true;
-                }
-            }
-            catch(Exception e1)
-            {
-            }
-        }
     }
 }
