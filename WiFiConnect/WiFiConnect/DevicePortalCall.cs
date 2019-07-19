@@ -47,10 +47,15 @@ namespace WiFiConnect
                     client.Timeout = TimeSpan.FromSeconds(3);
 
                     response = await client.GetAsync(uri).ConfigureAwait(true);
+
+                    var x1 = response.Content;
+                    var x2 = response.Headers;
+                    var x3 = response.RequestMessage;
                     
-                        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    //Task.Delay(1000).Wait();
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                         {
-                            mp.NotifyUser("BotEyes Device Portal Password is wrong.", MainPage.NotifyType.ErrorMessage);
                             return response.StatusCode.ToString();
                         }
                         if (response.IsSuccessStatusCode)
@@ -83,7 +88,17 @@ namespace WiFiConnect
                 result = "WrongNet";
                 return result; 
             }
-            return result;
+
+            if ((result == "OK") && (guid != ""))
+            {
+                return result;
+            }
+            else if ((result == "OK") && (guid == ""))
+            {
+                result = "GuidFail";
+                return result;
+            }
+            else return "";
         }
 
         public async Task<string> ConnectRobotToWiFiAsync(string networkName, string networkSecurityKey, string x)
@@ -91,14 +106,13 @@ namespace WiFiConnect
 
             string result1 = await LookingForGuidAsync(CommonStruct.devicePortalPassword, "Administrator", "");
 
-            if (result1 == "WrongNet")
+            if ((result1 == "WrongNet") || (result1 == "Unauthorized"))
             {
                 return result1;
             }
 
             if (result1 != "OK")
             {
-                mp.NotifyUser(result1, MainPage.NotifyType.StatusMessage);
                 return result1;
             }
 
@@ -130,7 +144,7 @@ namespace WiFiConnect
             }
             catch(Exception ex)
             {
-                result = "Something is wrong. Check if your gadget is connected to BotEyes access point AJ_..."; 
+                result = ex.Message; 
             }
             return result;
         }
@@ -164,14 +178,13 @@ namespace WiFiConnect
             long timeEllapsed = 0;
             int loopNumber = 0;
 
-            if ((result == "Unauthorized") || ( result =="WrongNet")) return result;
+            if ( result =="WrongNet") return result;
 
             if ((result != "OK") && (result != "NotConnected"))
             {
                 while (((result != "OK") && (result != "NotConnected")) && (timeEllapsed < 120))
                 {
                     result = await func(x, y, z);
-                    if (result == "Unauthorized") return result;
                     dt = DateTime.Now;
                     timeEllapsed = (dt.Ticks - startTicks) / oneSec;//
                     if (timeEllapsed > 30)

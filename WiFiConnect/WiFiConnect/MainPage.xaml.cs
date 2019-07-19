@@ -32,7 +32,8 @@ namespace WiFiConnect
             }
 
             CommonStruct.devicePortalPassword = (App.Current.Properties["devicePortalPassword"].ToString());
-
+            
+            DevicePortalSettings.PropertyChanging += DevicePortalSettings_PropertyChanging;
             //var currentuserID = (App.Current.Properties["devicePortalPassword"].ToString());
             //App.Current.Properties.TryGetValue("devicePortalPassword", out name);
         }
@@ -125,7 +126,7 @@ namespace WiFiConnect
             //networkKeyValue = "pr0tectnetw0rk13";
             var wifi = Plugin.Connectivity.Abstractions.ConnectionType.WiFi;
             var connectionTypes = CrossConnectivity.Current.ConnectionTypes;
-            NotifyUser("", NotifyType.StatusMessage);
+            NotifyUser("", NotifyType.Empty);
 
             if ((ssid == null) || (ssid == ""))
             {
@@ -161,14 +162,25 @@ namespace WiFiConnect
                     return;
                 }
 
-                if(result == "Unauthorized")
+                if (result == "Internal server error")
+                {
+                    NotifyUser("Check SSID and Key in fields above.", NotifyType.ErrorMessage);
+                    return;
+                }
+                if (result == "GuidFail")
+                {
+                    NotifyUser("Check BotEyes Device Portal Password (Press button 'Settings' below).", NotifyType.ErrorMessage);
+                    return;
+                }
+
+                if (result == "Unauthorized")
                 {
                     NotifyUser("Password for Device Portal is wrong.", NotifyType.ErrorMessage);
                     return;
                 }
                 else if (result != "OK")
                 {
-                    NotifyUser("Something is wrong. Check password and if your gadget is connected to BotEyes access point AJ_...", NotifyType.ErrorMessage);
+                    NotifyUser("Something is wrong. Check if your gadget is connected to BotEyes access point 'AJ_...'", NotifyType.ErrorMessage);
                     return;
                 }
                 else
@@ -225,6 +237,9 @@ namespace WiFiConnect
                 case NotifyType.ErrorMessage:
                     StatusBorder.BackgroundColor = Color.Red;
                     break;
+                case NotifyType.Empty:
+                    StatusBorder.BackgroundColor = Color.White;
+                    break;
             }
             StatusBlock.Text = "   " + strMessage;
             BatchBegin();
@@ -236,16 +251,19 @@ namespace WiFiConnect
         {
             devicePortalPassword.Text = CommonStruct.devicePortalPassword;
 
-
+            NotifyUser("", NotifyType.Empty);
             DevicePortalSettings.IsVisible = true;
-            DevicePortalSettings.LayoutChanged += DevicePortalSettings_LayoutChanged;
+
             
+
         }
 
-        private void DevicePortalSettings_LayoutChanged(object sender, EventArgs e)
+        private void DevicePortalSettings_PropertyChanging(object sender, PropertyChangingEventArgs e)
         {
-            ScrollOfPage.ScrollToAsync(SettingsButton, ScrollToPosition.End, true);
+            ScrollOfPage.ScrollToAsync(3000, 6000, true);
         }
+
+        
 
         private void PasswordEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -260,7 +278,8 @@ namespace WiFiConnect
         public enum NotifyType
         {
             StatusMessage,
-            ErrorMessage
+            ErrorMessage,
+            Empty
         };
 
         private async void Save_ClickedAsync(object sender, EventArgs e)
@@ -268,7 +287,7 @@ namespace WiFiConnect
             CommonStruct.devicePortalPassword = devicePortalPassword.Text;
             App.Current.Properties["devicePortalPassword"] = CommonStruct.devicePortalPassword;
             await App.Current.SavePropertiesAsync();
-
+            
             DevicePortalSettings.IsVisible = false;
         }
 
