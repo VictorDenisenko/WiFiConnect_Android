@@ -14,7 +14,7 @@ namespace WiFiConnect
             Title = "Modal Page";
             Button backButton = new Button
             {
-                Text = "Назад",
+                Text = "Backward",
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center
             };

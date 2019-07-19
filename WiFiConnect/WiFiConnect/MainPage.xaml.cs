@@ -169,18 +169,18 @@ namespace WiFiConnect
                 }
                 if (result == "GuidFail")
                 {
-                    NotifyUser("Check BotEyes Device Portal Password (Press button 'Settings' below).", NotifyType.ErrorMessage);
+                    NotifyUser("Check BotEyes Device Portal Password (press button 'Settings' below).", NotifyType.ErrorMessage);
                     return;
                 }
 
                 if (result == "Unauthorized")
                 {
-                    NotifyUser("Password for Device Portal is wrong.", NotifyType.ErrorMessage);
+                    NotifyUser("Password for Device Portal is wrong. (Press button 'Settings' below)", NotifyType.ErrorMessage);
                     return;
                 }
                 else if (result != "OK")
                 {
-                    NotifyUser("Something is wrong. Check if your gadget is connected to BotEyes access point 'AJ_...'", NotifyType.ErrorMessage);
+                    NotifyUser("Something is wrong. Check if you did everything right.", NotifyType.ErrorMessage);
                     return;
                 }
                 else

@@ -48,38 +48,31 @@ namespace WiFiConnect
 
                     response = await client.GetAsync(uri).ConfigureAwait(true);
 
-                    var x1 = response.Content;
-                    var x2 = response.Headers;
-                    var x3 = response.RequestMessage;
-                    
-                    //Task.Delay(1000).Wait();
-
                     if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                         {
                             return response.StatusCode.ToString();
                         }
-                        if (response.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = Convert.ToString(response.StatusCode);
+
+                        if (response.Content != null)
                         {
-                            result = Convert.ToString(response.StatusCode);
-
-                            if (response.Content != null)
+                            string responseBodyAsText = "";
+                            responseBodyAsText = await response.Content.ReadAsStringAsync();
+                            guid = getGUID(Convert.ToString(responseBodyAsText));
+                            CommonStruct.publicGuid = guid;
+                            if (guid == "")
                             {
-                                string responseBodyAsText = "";
-                                responseBodyAsText = await response.Content.ReadAsStringAsync();
-
-                                guid = getGUID(Convert.ToString(responseBodyAsText));
-                                CommonStruct.publicGuid = guid;
-                                if (guid == "")
-                                {
-                                    result = "";
-                                    return result;
-                                }
+                                result = "";
+                                return result;
                             }
                         }
-                        else
-                        {
-                            result = "";
-                        }
+                    }
+                    else
+                    {
+                        result = "";
+                    }
                 }
             }
             catch (Exception ex)
@@ -98,7 +91,11 @@ namespace WiFiConnect
                 result = "GuidFail";
                 return result;
             }
-            else return "";
+            else
+            {
+                result = "";
+                return result;
+            }
         }
 
         public async Task<string> ConnectRobotToWiFiAsync(string networkName, string networkSecurityKey, string x)
